@@ -31,8 +31,13 @@ export const logoutUser = async () => {
 };
 
 export const getUser = async () => {
-  const res = await api.get("/users/getme");
-  return res.data;
+  try {
+    const res = await api.get("/users/getme");
+    return res.data;
+  } catch (error) {
+    console.error("Failed to fetch authenticated user:", error);
+    return null;
+  }
 };
 
 export const getUsers = async () => {

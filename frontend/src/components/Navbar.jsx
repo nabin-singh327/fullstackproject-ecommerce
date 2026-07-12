@@ -4,7 +4,7 @@ import useAuth from "../hooks/useAuth";
 import { useSelector } from "react-redux";
 
 const Navbar = () => {
-  const { logout } = useAuth();
+  const { logout, fetchUser } = useAuth();
 
   const { user, isAuthenticated } = useSelector((state) => state.auth);
 
@@ -19,11 +19,12 @@ const Navbar = () => {
     await logout();
   };
 
-  const { fetchUser } = useAuth();
-
   useEffect(() => {
-    fetchUser();
-  }, []);
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetchUser();
+    }
+  }, [fetchUser]);
 
   return (
     <nav className="flex sticky top-0 items-center justify-between px-6 py-4 bg-gray-300 shadow-md">
