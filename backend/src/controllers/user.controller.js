@@ -31,7 +31,12 @@ export const signUpUser = async (req, res) => {
       { expiresIn: "2h" },
     );
 
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 2 * 60 * 60 * 1000,
+    });
 
     res.status(201).json({
       message: "user signed up",
@@ -82,7 +87,12 @@ export const loginUser = async (req, res) => {
       { expiresIn: "2h" },
     );
 
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 2 * 60 * 60 * 1000,
+    });
 
     res.status(200).json({
       message: "user logged in",
@@ -105,7 +115,10 @@ export const loginUser = async (req, res) => {
 
 export const logoutUser = (req, res) => {
   try {
-    res.clearCookie("token");
+    res.clearCookie("token", {
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
     res.status(200).json({
       message: "user logged out",
       success: true,
