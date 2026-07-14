@@ -154,18 +154,27 @@ export const getMe = (req, res) => {
 };
 
 export const getUsers = async (req, res) => {
-  const users = await userModel.find({}, "-password");
-  if (!users) {
-    return res.status(404).json({
-      message: "No users found",
+  try {
+    const users = await userModel.find({}, "-password");
+    if (!users || users.length === 0) {
+      return res.status(404).json({
+        message: "No users found",
+        success: false,
+      });
+    }
+    res.status(200).json({
+      message: "users fetched",
+      success: true,
+      data: users,
+    });
+  } catch (error) {
+    console.error("Failed to fetch users", error);
+    res.status(500).json({
+      message: "Internal server error",
       success: false,
+      error: error.message,
     });
   }
-  res.status(200).json({
-    message: "users fetched",
-    success: true,
-    data: users,
-  });
 };
 
 export const updateUser = async (req, res) => {
